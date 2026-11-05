@@ -49,10 +49,18 @@ jobs:
         run: docker build -t gameflix/api:$GITHUB_SHA .
 
       - name: Generate SBOM
-        run: syft gameflix/api:$GITHUB_SHA -o cyclonedx-json=sbom.cdx.json
+        uses: anchore/sbom-action@v0
+        with:
+          image: gameflix/api:$GITHUB_SHA
+          format: cyclonedx-json
+          output-file: sbom.cdx.json
 
       - name: Scan and gate
-        run: trivy image --severity HIGH,CRITICAL --exit-code 1 gameflix/api:$GITHUB_SHA
+        uses: aquasecurity/trivy-action@v0.36.0
+        with:
+          image-ref: gameflix/api:$GITHUB_SHA
+          severity: CRITICAL,HIGH
+          exit-code: 1
 
       - name: Archive SBOM as build evidence
         uses: actions/upload-artifact@v4
