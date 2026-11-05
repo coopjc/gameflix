@@ -54,6 +54,7 @@ jobs:
           image: gameflix/api:${{ github.sha }}
           format: cyclonedx-json
           output-file: sbom.cdx.json
+          upload-artifact: 'false'
 
       - name: Scan and gate
         uses: aquasecurity/trivy-action@v0.36.0
