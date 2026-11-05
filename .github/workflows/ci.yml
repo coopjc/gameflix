@@ -46,19 +46,19 @@ jobs:
           JWT_SECRET: 001d794348364ed3cb2856e20c82a6fc2d3496f7a0cda7aaafecb6998f0f2ffc
 
       - name: Build Docker image
-        run: docker build -t gameflix/api:$GITHUB_SHA .
+        run: docker build -t gameflix/api:${{ github.sha }} .
 
       - name: Generate SBOM
         uses: anchore/sbom-action@v0
         with:
-          image: gameflix/api:$GITHUB_SHA
+          image: gameflix/api:${{ github.sha }}
           format: cyclonedx-json
           output-file: sbom.cdx.json
 
       - name: Scan and gate
         uses: aquasecurity/trivy-action@v0.36.0
         with:
-          image-ref: gameflix/api:$GITHUB_SHA
+          image-ref: gameflix/api:${{ github.sha }}
           severity: CRITICAL,HIGH
           exit-code: 1
 
